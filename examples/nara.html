@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>GmxControls Leaflet Quick Start Guide Example</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet-src.js"></script>
+
+    <link rel="stylesheet" href="http://scanex.github.io/gmxDrawing/css/L.gmxDrawing.css" />
+	<script src="http://scanex.github.io/gmxDrawing/src/L.GmxDrawing.js"></script>
+
+	<script src="http://scanex.github.io/gmxControls/build/gmxControls-dev.js"></script>
+
+	<script src="http://scanex.github.io/Leaflet-GeoMixer/build/leaflet-geomixer-dev.js?key=U92596WMIH"></script>
+	<script src="http://scanex.github.io/Leaflet.gmxBaseLayersManager/src/gmxBaseLayersManager.js"></script>
+	<script src="http://scanex.github.io/Leaflet.gmxBaseLayersManager/src/initBaseLayerManager.js"></script>
+	<script src="http://scanex.github.io/Leaflet.TileLayer.Mercator/src/TileLayer.Mercator.js"></script>
+
+    <style>
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+            margin: 0px;
+        }
+        .leaflet-gmx-icon-boxzoom {
+            background-position: -624px 1px;
+        }
+        .leaflet-gmx-icon-boxzoom-active {
+            background-position: -624px -25px;
+        }
+
+        .leaflet-control-permalink, .leaflet-control-print {
+            clear: none;
+        }
+        .leaflet-gmx-icon-permalink{
+            background-position: -532px 1px;
+        }
+
+        .leaflet-gmx-icon-print {
+            background-position: -50px -0px;    
+        }
+        .leaflet-gmx-icon-print,
+        .leaflet-gmx-icon-permalink,
+        .leaflet-gmx-icon-boxzoom
+        {
+            background-image: url("../src/css/img/gmxSprite.png");
+        }
+
+        
+    </style>
+</head>
+<body>
+	<div id="map"></div>
+
+	<script>
+        var map = new L.Map('map', {center: new L.LatLng(55.440116, 36.726608), zoom: 11});
+
+        var blm = map.gmxBaseLayersManager;
+        blm.initDefaults().then(function() {
+            var baseLayers = ['OSM'],
+                currentID = baseLayers[0];
+            blm.setActiveIDs(baseLayers).setCurrentID(currentID);
+        });
+        L.control.gmxLayers(blm).addTo(map)
+
+        var controlsManager = map.gmxControlsManager;
+        controlsManager.init(
+        {
+            gmxDrawing: {items: ['Polyline', 'Point', 'Polygon']}
+            //gmxLocation: {scaleFormat: 'text'}
+            //gmxHide: {isActive: false}
+            //gmxLogo: null
+        }
+        );
+        map.addControl(new L.Control.gmxIcon({
+            id: 'saveMe',
+            text: 'Сохранить',
+            title: 'Сохранить объекты'
+         })
+        );
+
+        L.gmxLocale.addText({
+            eng: {
+                edit: 'Edit',
+                print: 'Print',
+                permalink: 'Link to the map',
+                boxZoom: 'BoxZoom'
+            },
+            rus: {
+                edit: 'Редактировать',
+                print: 'Печать',
+                permalink: 'Пермалинк',
+                boxZoom: 'Увеличение'
+            }
+        });
+        var myGroupControl1 = new L.Control.gmxIconGroup({
+            id: 'myGroupControl1',
+            items: [
+                new L.Control.gmxIcon({
+                    id: 'editVectorObject1',
+                    title: L.gmxLocale.getText('edit'),
+                    togglable: true,
+                    regularImageUrl: 'img/project_tool.png',
+                    activeImageUrl: 'img/project_tool_a.png'
+                })
+                .on('statechange', function (ev) {
+                    console.log('editVectorObject1', ev);
+                })
+                ,
+                new L.Control.gmxIcon({
+                    id: 'boxzoom',
+                    togglable: true,
+                    title: L.gmxLocale.getText('boxZoom'),
+                    onAdd: function (control) {
+                        //console.log('onAdd', this, arguments);
+                        var _onMouseDown = map.boxZoom._onMouseDown;
+                        map.boxZoom._onMouseDown = function (e) {
+                            _onMouseDown.call(map.boxZoom, {
+                                clientX: e.clientX,
+                                clientY: e.clientY,
+                                which: 1,
+                                shiftKey: true
+                            });
+                        };
+                        map.on('boxzoomend', function () {
+                            map.dragging.enable();
+                            map.boxZoom.removeHooks();
+                            control.setActive(false);
+                        });
+                    }
+                  })
+                  .on('statechange', function (ev) {
+                    //console.log('boxzoom', ev);
+                    var control = ev.target;
+                    if (control.options.isActive) {
+                        map.dragging.disable();
+                        map.boxZoom.addHooks();
+                    } else {
+                        map.dragging.enable();
+                        map.boxZoom.removeHooks();
+                    }
+                 })
+            ]
+        });
+        map.addControl(myGroupControl1);
+        map
+            .addControl(new L.Control.gmxIcon({
+                id: 'print',
+                title: L.gmxLocale.getText('print')
+             })
+              .on('statechange', function (ev) {
+                console.log('print', ev);
+              })
+            )
+            .addControl(new L.Control.gmxIcon({
+                id: 'permalink',
+                title: L.gmxLocale.getText('permalink')
+             })
+              .on('statechange', function (ev) {
+                console.log('permalink', ev);
+              })
+            );
+
+        var prefix = 'http://maps.kosmosnimki.ru/GetImage.ashx?usr=khaibrik%40scanex.ru&img='
+        var items = [
+            new L.Control.gmxIcon({
+                id: 'addObject3',
+                title: 'Добавить новый объект 3',
+                regularImageUrl: prefix + 'sled_walf.png'
+            })
+            .on('click', function (ev) {
+                    console.log('click', arguments);
+            })
+            .on('statechange', function (ev) {
+                    console.log('statechange', arguments, ev.target.options.isActive);
+            })
+            ,
+            new L.Control.gmxIcon({
+                id: 'addObject4',
+                title: 'Добавить новый объект 4',
+                regularImageUrl: prefix + 'logovo_walf.png'
+            })
+            .on('click', function (ev) {
+                    console.log('click', arguments);
+            })
+            .on('statechange', function (ev) {
+                    console.log('statechange', arguments, ev.target.options.isActive);
+            })
+            ,
+            new L.Control.gmxIcon({
+                id: 'addObject5',
+                title: 'Добавить новый объект 5',
+                togglable: true,
+                regularImageUrl: prefix + 'polygon_walf.png'
+            })
+            .on('click', function (ev) {
+                    console.log('click', arguments);
+            })
+            .on('statechange', function (ev) {
+                    console.log('statechange', arguments, ev.target.options.isActive);
+            })
+            ,
+            new L.Control.gmxIcon({
+                id: 'addObject6',
+                title: 'Добавить новый объект 6',
+                togglable: true,
+                regularImageUrl: prefix + 'sled_beer.png'
+            })
+            .on('click', function (ev) {
+                    console.log('click', arguments);
+            })
+            .on('statechange', function (ev) {
+                    console.log('statechange', arguments, ev.target.options.isActive);
+            })
+            ,
+            new L.Control.gmxIcon({
+                id: 'addObject7',
+                title: 'Добавить новый объект 7',
+                togglable: true,
+                regularImageUrl: prefix + 'polygon_beer.png'
+            })
+            .on('click', function (ev) {
+                    console.log('click', arguments);
+            })
+            .on('statechange', function (ev) {
+                    console.log('statechange', arguments, ev.target.options.isActive);
+            })
+            ,
+            new L.Control.gmxIcon({
+                id: 'addObject8',
+                title: 'Добавить новый объект 8',
+                togglable: true,
+                regularImageUrl: prefix + 'zmu.png'
+            })
+            .on('click', function (ev) {
+                    console.log('click', arguments);
+            })
+            .on('statechange', function (ev) {
+                    console.log('statechange', arguments, ev.target.options.isActive);
+            })
+            ,
+            new L.Control.gmxIcon({
+                id: 'addObject9',
+                title: 'Добавить новый объект 9',
+                togglable: true,
+                regularImageUrl: prefix + 'days.png'
+            })
+            .on('click', function (ev) {
+                    console.log('click', arguments);
+            })
+            .on('statechange', function (ev) {
+                    console.log('statechange', arguments, ev.target.options.isActive);
+            })
+            ,
+            new L.Control.gmxIcon({
+                id: 'addObject10',
+                title: 'Добавить новый объект 10',
+                togglable: true,
+                regularImageUrl: prefix + 'test.png'
+            })
+            .on('click', function (ev) {
+                    console.log('click', arguments);
+            })
+            .on('statechange', function (ev) {
+                    console.log('statechange', arguments, ev.target.options.isActive);
+            })
+        ];
+        var myGroupControl = new L.Control.gmxIconGroup({
+            id: 'myGroupControl',
+            addBefore: 'boxzoom',
+            singleSelection: true,
+            isSortable: true,
+            items: items
+        });
+        map.addControl(myGroupControl);
+	</script>
+</body>
+</html>

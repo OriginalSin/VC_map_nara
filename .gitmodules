@@ -1,0 +1,15 @@
+[submodule "external/L.Cadastre"]
+	path = external/L.Cadastre
+	url = git@github.com:OriginalSin/L.Cadastre.git
+[submodule "external/Leaflet-GeoMixer"]
+	path = external/Leaflet-GeoMixer
+	url = git@github.com:ScanEx/Leaflet-GeoMixer.git
+[submodule "external/gmxControls"]
+	path = external/gmxControls
+	url = git@github.com:ScanEx/gmxControls.git
+[submodule "external/gmxDrawing"]
+	path = external/gmxDrawing
+	url = git@github.com:ScanEx/gmxDrawing.git
+[submodule "external/Leaflet.TileLayer.Mercator"]
+	path = external/Leaflet.TileLayer.Mercator
+	url = git@github.com:ScanEx/Leaflet.TileLayer.Mercator.git

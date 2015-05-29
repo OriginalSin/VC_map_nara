@@ -1,0 +1,19 @@
+{
+  "name": "Map Narofominsk",
+  "version": "0.0.1",
+  "description": "Map Narofominsk",
+  "devDependencies": {
+    "jake": "~0.5.16",
+    "ncp": "^1.0.1",
+    "uglify-js": "~2.3.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/OriginalSin/VC_map_nara.git"
+  },
+  "keywords": [
+    "gis",
+    "leaflet",
+    "geomixer"
+  ]
+}
