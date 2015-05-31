@@ -6,57 +6,32 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet-src.js"></script>
+    <link rel="stylesheet" href="../dist/css/mapnara.css" />
+    <script src="../dist/mapnara-min.js"></script>
 
-    <link rel="stylesheet" href="http://scanex.github.io/gmxDrawing/css/L.gmxDrawing.css" />
-	<script src="http://scanex.github.io/gmxDrawing/src/L.GmxDrawing.js"></script>
-
-	<script src="http://scanex.github.io/gmxControls/build/gmxControls-dev.js"></script>
-
-	<script src="http://scanex.github.io/Leaflet-GeoMixer/build/leaflet-geomixer-dev.js?key=U92596WMIH"></script>
-	<script src="http://scanex.github.io/Leaflet.gmxBaseLayersManager/src/gmxBaseLayersManager.js"></script>
-	<script src="http://scanex.github.io/Leaflet.gmxBaseLayersManager/src/initBaseLayerManager.js"></script>
-	<script src="http://scanex.github.io/Leaflet.TileLayer.Mercator/src/TileLayer.Mercator.js"></script>
-
+    <script src="http://vk.com/js/api/openapi.js" type="text/javascript"></script>
     <style>
         html, body, #map {
             height: 100%;
             width: 100%;
             margin: 0px;
         }
-        .leaflet-gmx-icon-boxzoom {
-            background-position: -624px 1px;
-        }
-        .leaflet-gmx-icon-boxzoom-active {
-            background-position: -624px -25px;
-        }
-
-        .leaflet-control-permalink, .leaflet-control-print {
-            clear: none;
-        }
-        .leaflet-gmx-icon-permalink{
-            background-position: -532px 1px;
-        }
-
-        .leaflet-gmx-icon-print {
-            background-position: -50px -0px;    
-        }
-        .leaflet-gmx-icon-print,
-        .leaflet-gmx-icon-permalink,
-        .leaflet-gmx-icon-boxzoom
-        {
-            background-image: url("../src/css/img/gmxSprite.png");
-        }
-
         
     </style>
 </head>
 <body>
 	<div id="map"></div>
-
+    <div id="vk_api_transport"></div>
 	<script>
-        var map = new L.Map('map', {center: new L.LatLng(55.440116, 36.726608), zoom: 11});
+        var map = new L.Map('map', {
+            maxBounds: [
+                [55.834843, 35.907440],
+                [55.16, 37.087097]
+            ],
+            center: new L.LatLng(55.440116, 36.726608),
+            zoom: 11
+        });
+        L.Icon.Default.imagePath = 'http://maps.kosmosnimki.ru/api/leaflet/images';
 
         var blm = map.gmxBaseLayersManager;
         blm.initDefaults().then(function() {
@@ -64,17 +39,138 @@
                 currentID = baseLayers[0];
             blm.setActiveIDs(baseLayers).setCurrentID(currentID);
         });
-        L.control.gmxLayers(blm).addTo(map)
+        L.control.gmxLayers(blm).addTo(map);
 
         var controlsManager = map.gmxControlsManager;
-        controlsManager.init(
-        {
-            gmxDrawing: {items: ['Polyline', 'Point', 'Polygon']}
-            //gmxLocation: {scaleFormat: 'text'}
-            //gmxHide: {isActive: false}
-            //gmxLogo: null
+        controlsManager.init({
+            gmxLocation: {scaleFormat: 'text'},
+            gmxLogo: {type: 'color'},
+            gmxHide: {isActive: true},
+            gmxDrawing: {items: ['Point', 'Rectangle', 'Polygon', 'Polyline']}
+        });
+
+        var vkontakte = new L.Control.gmxIcon({
+            id: 'vkontakte',
+            title: 'Вход через ВКонтакте',
+            regularImageUrl: 'img/vkontakte.png'
+        })
+        .on('click', function (ev) {
+            VK.Auth.login(authInfo);
+        });
+
+        VK.init({
+            apiId: 4937579 
+        });
+
+        function chkAlbums(response) {
+            console.log('chkAlbums ', response);
         }
-        );
+
+        var mid = null,
+            addDataControl = new L.Control.gmxIcon({
+                id: 'addData',
+                togglable: true,
+                regularImageUrl: 'img/camera.png',
+                activeImageUrl: 'img/camera_a.png',
+                title: 'Включить/Выключить режим добавления фото'
+             })
+             .on('statechange', function (ev) {
+                console.log('statechange', ev);
+                var control = ev.target;
+                if (control.options.isActive) {
+                    VK.Api.call('photos.getAlbums', {
+                        owner_id: mid,
+                        album_ids: '216364571',
+                        need_covers: 1,
+                        photo_sizes: 1
+                     }, chkAlbums
+                    );
+                
+                    map.dragging.disable();
+                    L.DomUtil.disableImageDrag();
+                } else {
+                    map.dragging.enable();
+                    L.DomUtil.enableImageDrag();
+                }
+            }),
+            curid = 1;
+        function chkAllKeys(response) {
+            console.log('chkAllKeys ', response);
+            map.addControl(addDataControl);
+        }
+        function authInfo(response) {
+            if (response.session) {
+                if (vkontakte._map) map.removeControl(vkontakte);
+                mid = response.session.mid;
+                VK.Api.call('storage.getKeys', {
+                    user_id: mid,
+                    global: 1
+                 }, chkAllKeys
+                );
+                // VK.Api.call('storage.get', {
+                    // keys: 'myKey, id',
+                    // user_id: mid,
+                    // global: 1
+                // }, function(r) {
+                    // console.log('storage.get ', arguments);
+                // });
+
+console.log('user: ' , response.session.mid, arguments);
+// VK.Api.call('storage.set', {
+    // key: 'myKey',
+    // value: {g1: 'dfdf', dd: 14},
+    // user_id: response.session.mid,
+    // global: 1
+// }, function(r) {
+    // console.log('storage.set ', arguments);
+// });
+// VK.Api.call('storage.get', {
+    // keys: 'myKey, id',
+    // user_id: mid,
+    // global: 1
+// }, function(r) {
+    // console.log('storage.get ', arguments);
+// });
+//VK.Api.call('storage.set', 'myKey', 'dfdf', response.session.mid, 1);                 
+                
+            } else {
+                console.log('not auth');
+                if (!vkontakte._map) map.addControl(vkontakte);
+            }
+        }
+        VK.Auth.getLoginStatus(authInfo);
+
+/*
+vkontakte.png 
+<div id="login_button" onclick="VK.Auth.login(authInfo);"></div>
+
+  window.vkAsyncInit = function() {
+    VK.init({
+      apiId: 4937579
+    });
+  };
+
+  setTimeout(function() {
+    var el = document.createElement("script");
+    el.type = "text/javascript";
+    el.src = "//vk.com/js/api/openapi.js";
+    el.async = true;
+    document.getElementById("vk_api_transport").appendChild(el);
+  }, 0);
+
+        VK.init(function() {
+         // API initialization succeeded
+         // Your code here
+            VK.api('users.get', {}, function(data) {
+console.log('users.get', arguments);
+                // Действия с полученными данными
+            });
+        }, function() {
+         // API initialization failed
+         // Can reload page here
+console.log('Can reload page here');
+        }, '5.33');
+
         map.addControl(new L.Control.gmxIcon({
             id: 'saveMe',
             text: 'Сохранить',
@@ -276,6 +372,7 @@
             items: items
         });
         map.addControl(myGroupControl);
+*/
 	</script>
 </body>
 </html>

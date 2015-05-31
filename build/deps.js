@@ -28,7 +28,7 @@ var depsJS = [
     "external/Leaflet-GeoMixer/src/ObjectsReorder.js",
     "external/Leaflet-GeoMixer/src/L.gmxLocale.js",
     "external/Leaflet-GeoMixer/src/lang_ru.js",
-    "external/Leaflet-GeoMixer/src/lang_en.js"
+    "external/Leaflet-GeoMixer/src/lang_en.js",
 
     "external/L.Cadastre/src/L.ImageOverlay.Pane.js",
     "external/L.Cadastre/src/L.Cadastre.js",
@@ -52,6 +52,9 @@ var depsJS = [
     "external/gmxControls/src/js/L.Control.gmxSidebar.js",
 
     "external/Leaflet.TileLayer.Mercator/src/TileLayer.Mercator.js",
+
+    "external/gmxBaseLayersManager/src/gmxBaseLayersManager.js",
+    "external/gmxBaseLayersManager/src/initBaseLayerManager.js",
 
     "external/gmxDrawing/src/L.GmxDrawing.js"
 ];
