@@ -203,7 +203,7 @@ L.vkMap = function(cont, options) {
                 skip_hidden: 1,
                 no_service_albums: 1
              }, function (pt) {
-                photoUtils.arrPhotos = pt.response;
+                photoUtils.arrPhotos = pt.response.items;
                 photoUtils.setOptions(photoUtils.selectPhoto, pt.response);
                 photoUtils.selectPhoto.style.display = 'block';
              }
@@ -220,7 +220,7 @@ L.vkMap = function(cont, options) {
                 skip_hidden: 1,
                 no_service_albums: 1
              }, function (pt) {
-                photoUtils.arrVideos = pt.response;
+                photoUtils.arrVideos = pt.response.items;
                 photoUtils.setOptions(photoUtils.selectVideo, pt.response);
                 photoUtils.selectVideo.style.display = 'block';
              }
