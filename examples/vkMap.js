@@ -48,18 +48,18 @@ L.vkMap = function(cont, options) {
                 VK.Auth.login(authInfo, 788);
             }
         };
-    var vkontakte = new L.Control.gmxIcon({
-        id: 'vkontakte',
-        title: 'Вход через ВКонтакте',
-        togglable: true,
-        addBefore: 'locateMe',
-        style: {
-            marginRight: '20px'
-        },
-        regularImageUrl: 'img/vkontakte.png'
-    })
-    .on('statechange', login)
-    .addTo(map);
+    // var vkontakte = new L.Control.gmxIcon({
+        // id: 'vkontakte',
+        // title: 'Вход через ВКонтакте',
+        // togglable: true,
+        // addBefore: 'locateMe',
+        // style: {
+            // marginRight: '20px'
+        // },
+        // regularImageUrl: 'img/vkontakte.png'
+    // })
+    // .on('statechange', login)
+    // .addTo(map);
 
     // VK.init({
         // apiId: 4948598 // 4937579 
