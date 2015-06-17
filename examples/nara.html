@@ -8,371 +8,46 @@
 
     <link rel="stylesheet" href="../dist/css/mapnara.css" />
     <script src="../dist/mapnara-min.js"></script>
+    <script src="vkMap.js"></script>
 
-    <script src="http://vk.com/js/api/openapi.js" type="text/javascript"></script>
+    <script src="https://vk.com/js/api/openapi.js" type="text/javascript"></script>
     <style>
         html, body, #map {
             height: 100%;
             width: 100%;
             margin: 0px;
         }
-        
+        .resPhoto {
+            position: relative;
+            min-height: 200px;
+            text-align: center;
+            /*color: red;*/
+        } 
+        .arrows {
+            height: 32px;
+            position: absolute;
+            top: 50%;
+            width: 100%;
+        }
+        .previous {
+            left: 2px;
+            bottom: calc(50% - 32px);
+            position: absolute;
+            cursor: pointer;
+        }
+        .next {
+            right: 2px;
+            bottom: calc(50% - 32px);
+            position: absolute;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 	<div id="map"></div>
     <div id="vk_api_transport"></div>
 	<script>
-        var map = new L.Map('map', {
-            maxBounds: [
-                [55.834843, 35.907440],
-                [55.16, 37.087097]
-            ],
-            center: new L.LatLng(55.440116, 36.726608),
-            zoom: 11
-        });
-        L.Icon.Default.imagePath = 'http://maps.kosmosnimki.ru/api/leaflet/images';
-
-        var blm = map.gmxBaseLayersManager;
-        blm.initDefaults().then(function() {
-            var baseLayers = ['OSM'],
-                currentID = baseLayers[0];
-            blm.setActiveIDs(baseLayers).setCurrentID(currentID);
-        });
-        L.control.gmxLayers(blm).addTo(map);
-
-        var controlsManager = map.gmxControlsManager;
-        controlsManager.init({
-            gmxLocation: {scaleFormat: 'text'},
-            gmxLogo: {type: 'color'},
-            gmxHide: {isActive: true},
-            gmxDrawing: {items: ['Point', 'Rectangle', 'Polygon', 'Polyline']}
-        });
-
-        var vkontakte = new L.Control.gmxIcon({
-            id: 'vkontakte',
-            title: 'Вход через ВКонтакте',
-            regularImageUrl: 'img/vkontakte.png'
-        })
-        .on('click', function (ev) {
-            VK.Auth.login(authInfo);
-        });
-
-        VK.init({
-            apiId: 4937579 
-        });
-
-        function chkAlbums(response) {
-            console.log('chkAlbums ', response);
-        }
-
-        var mid = null,
-            addDataControl = new L.Control.gmxIcon({
-                id: 'addData',
-                togglable: true,
-                regularImageUrl: 'img/camera.png',
-                activeImageUrl: 'img/camera_a.png',
-                title: 'Включить/Выключить режим добавления фото'
-             })
-             .on('statechange', function (ev) {
-                console.log('statechange', ev);
-                var control = ev.target;
-                if (control.options.isActive) {
-                    VK.Api.call('photos.getAlbums', {
-                        owner_id: mid,
-                        album_ids: '216364571',
-                        need_covers: 1,
-                        photo_sizes: 1
-                     }, chkAlbums
-                    );
-                
-                    map.dragging.disable();
-                    L.DomUtil.disableImageDrag();
-                } else {
-                    map.dragging.enable();
-                    L.DomUtil.enableImageDrag();
-                }
-            }),
-            curid = 1;
-        function chkAllKeys(response) {
-            console.log('chkAllKeys ', response);
-            map.addControl(addDataControl);
-        }
-        function authInfo(response) {
-            if (response.session) {
-                if (vkontakte._map) map.removeControl(vkontakte);
-                mid = response.session.mid;
-                VK.Api.call('storage.getKeys', {
-                    user_id: mid,
-                    global: 1
-                 }, chkAllKeys
-                );
-                // VK.Api.call('storage.get', {
-                    // keys: 'myKey, id',
-                    // user_id: mid,
-                    // global: 1
-                // }, function(r) {
-                    // console.log('storage.get ', arguments);
-                // });
-
-console.log('user: ' , response.session.mid, arguments);
-// VK.Api.call('storage.set', {
-    // key: 'myKey',
-    // value: {g1: 'dfdf', dd: 14},
-    // user_id: response.session.mid,
-    // global: 1
-// }, function(r) {
-    // console.log('storage.set ', arguments);
-// });
-// VK.Api.call('storage.get', {
-    // keys: 'myKey, id',
-    // user_id: mid,
-    // global: 1
-// }, function(r) {
-    // console.log('storage.get ', arguments);
-// });
-//VK.Api.call('storage.set', 'myKey', 'dfdf', response.session.mid, 1);                 
-                
-            } else {
-                console.log('not auth');
-                if (!vkontakte._map) map.addControl(vkontakte);
-            }
-        }
-        VK.Auth.getLoginStatus(authInfo);
-
-/*
-vkontakte.png 
-<div id="login_button" onclick="VK.Auth.login(authInfo);"></div>
-
-  window.vkAsyncInit = function() {
-    VK.init({
-      apiId: 4937579
-    });
-  };
-
-  setTimeout(function() {
-    var el = document.createElement("script");
-    el.type = "text/javascript";
-    el.src = "//vk.com/js/api/openapi.js";
-    el.async = true;
-    document.getElementById("vk_api_transport").appendChild(el);
-  }, 0);
-
-        VK.init(function() {
-         // API initialization succeeded
-         // Your code here
-            VK.api('users.get', {}, function(data) {
-console.log('users.get', arguments);
-                // Действия с полученными данными
-            });
-        }, function() {
-         // API initialization failed
-         // Can reload page here
-console.log('Can reload page here');
-        }, '5.33');
-
-        map.addControl(new L.Control.gmxIcon({
-            id: 'saveMe',
-            text: 'Сохранить',
-            title: 'Сохранить объекты'
-         })
-        );
-
-        L.gmxLocale.addText({
-            eng: {
-                edit: 'Edit',
-                print: 'Print',
-                permalink: 'Link to the map',
-                boxZoom: 'BoxZoom'
-            },
-            rus: {
-                edit: 'Редактировать',
-                print: 'Печать',
-                permalink: 'Пермалинк',
-                boxZoom: 'Увеличение'
-            }
-        });
-        var myGroupControl1 = new L.Control.gmxIconGroup({
-            id: 'myGroupControl1',
-            items: [
-                new L.Control.gmxIcon({
-                    id: 'editVectorObject1',
-                    title: L.gmxLocale.getText('edit'),
-                    togglable: true,
-                    regularImageUrl: 'img/project_tool.png',
-                    activeImageUrl: 'img/project_tool_a.png'
-                })
-                .on('statechange', function (ev) {
-                    console.log('editVectorObject1', ev);
-                })
-                ,
-                new L.Control.gmxIcon({
-                    id: 'boxzoom',
-                    togglable: true,
-                    title: L.gmxLocale.getText('boxZoom'),
-                    onAdd: function (control) {
-                        //console.log('onAdd', this, arguments);
-                        var _onMouseDown = map.boxZoom._onMouseDown;
-                        map.boxZoom._onMouseDown = function (e) {
-                            _onMouseDown.call(map.boxZoom, {
-                                clientX: e.clientX,
-                                clientY: e.clientY,
-                                which: 1,
-                                shiftKey: true
-                            });
-                        };
-                        map.on('boxzoomend', function () {
-                            map.dragging.enable();
-                            map.boxZoom.removeHooks();
-                            control.setActive(false);
-                        });
-                    }
-                  })
-                  .on('statechange', function (ev) {
-                    //console.log('boxzoom', ev);
-                    var control = ev.target;
-                    if (control.options.isActive) {
-                        map.dragging.disable();
-                        map.boxZoom.addHooks();
-                    } else {
-                        map.dragging.enable();
-                        map.boxZoom.removeHooks();
-                    }
-                 })
-            ]
-        });
-        map.addControl(myGroupControl1);
-        map
-            .addControl(new L.Control.gmxIcon({
-                id: 'print',
-                title: L.gmxLocale.getText('print')
-             })
-              .on('statechange', function (ev) {
-                console.log('print', ev);
-              })
-            )
-            .addControl(new L.Control.gmxIcon({
-                id: 'permalink',
-                title: L.gmxLocale.getText('permalink')
-             })
-              .on('statechange', function (ev) {
-                console.log('permalink', ev);
-              })
-            );
-
-        var prefix = 'http://maps.kosmosnimki.ru/GetImage.ashx?usr=khaibrik%40scanex.ru&img='
-        var items = [
-            new L.Control.gmxIcon({
-                id: 'addObject3',
-                title: 'Добавить новый объект 3',
-                regularImageUrl: prefix + 'sled_walf.png'
-            })
-            .on('click', function (ev) {
-                    console.log('click', arguments);
-            })
-            .on('statechange', function (ev) {
-                    console.log('statechange', arguments, ev.target.options.isActive);
-            })
-            ,
-            new L.Control.gmxIcon({
-                id: 'addObject4',
-                title: 'Добавить новый объект 4',
-                regularImageUrl: prefix + 'logovo_walf.png'
-            })
-            .on('click', function (ev) {
-                    console.log('click', arguments);
-            })
-            .on('statechange', function (ev) {
-                    console.log('statechange', arguments, ev.target.options.isActive);
-            })
-            ,
-            new L.Control.gmxIcon({
-                id: 'addObject5',
-                title: 'Добавить новый объект 5',
-                togglable: true,
-                regularImageUrl: prefix + 'polygon_walf.png'
-            })
-            .on('click', function (ev) {
-                    console.log('click', arguments);
-            })
-            .on('statechange', function (ev) {
-                    console.log('statechange', arguments, ev.target.options.isActive);
-            })
-            ,
-            new L.Control.gmxIcon({
-                id: 'addObject6',
-                title: 'Добавить новый объект 6',
-                togglable: true,
-                regularImageUrl: prefix + 'sled_beer.png'
-            })
-            .on('click', function (ev) {
-                    console.log('click', arguments);
-            })
-            .on('statechange', function (ev) {
-                    console.log('statechange', arguments, ev.target.options.isActive);
-            })
-            ,
-            new L.Control.gmxIcon({
-                id: 'addObject7',
-                title: 'Добавить новый объект 7',
-                togglable: true,
-                regularImageUrl: prefix + 'polygon_beer.png'
-            })
-            .on('click', function (ev) {
-                    console.log('click', arguments);
-            })
-            .on('statechange', function (ev) {
-                    console.log('statechange', arguments, ev.target.options.isActive);
-            })
-            ,
-            new L.Control.gmxIcon({
-                id: 'addObject8',
-                title: 'Добавить новый объект 8',
-                togglable: true,
-                regularImageUrl: prefix + 'zmu.png'
-            })
-            .on('click', function (ev) {
-                    console.log('click', arguments);
-            })
-            .on('statechange', function (ev) {
-                    console.log('statechange', arguments, ev.target.options.isActive);
-            })
-            ,
-            new L.Control.gmxIcon({
-                id: 'addObject9',
-                title: 'Добавить новый объект 9',
-                togglable: true,
-                regularImageUrl: prefix + 'days.png'
-            })
-            .on('click', function (ev) {
-                    console.log('click', arguments);
-            })
-            .on('statechange', function (ev) {
-                    console.log('statechange', arguments, ev.target.options.isActive);
-            })
-            ,
-            new L.Control.gmxIcon({
-                id: 'addObject10',
-                title: 'Добавить новый объект 10',
-                togglable: true,
-                regularImageUrl: prefix + 'test.png'
-            })
-            .on('click', function (ev) {
-                    console.log('click', arguments);
-            })
-            .on('statechange', function (ev) {
-                    console.log('statechange', arguments, ev.target.options.isActive);
-            })
-        ];
-        var myGroupControl = new L.Control.gmxIconGroup({
-            id: 'myGroupControl',
-            addBefore: 'boxzoom',
-            singleSelection: true,
-            isSortable: true,
-            items: items
-        });
-        map.addControl(myGroupControl);
-*/
+        L.vkMap('map');
 	</script>
 </body>
 </html>
