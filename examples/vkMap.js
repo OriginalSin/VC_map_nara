@@ -132,7 +132,7 @@ L.vkMap = function(cont, options) {
                     };
                 }
             }
-            VK.Api.call('storage.set', out, function() {});
+            VK.api('storage.set', out, function() {});
         },
         setOptions: function (snode, arr) {
             snode.innerHTML = '';
@@ -196,7 +196,7 @@ L.vkMap = function(cont, options) {
         getPhotos: function () {
             photoUtils.selectPhoto.style.display = 'none';
             photoUtils.selectPhoto.setAttribute('size', 4);
-            VK.Api.call('photos.getAll', {
+            VK.api('photos.getAll', {
                 owner_id: mid,
                 count: 200,
                 extended: 1,
@@ -213,7 +213,7 @@ L.vkMap = function(cont, options) {
         getVideos: function () {
             photoUtils.selectVideo.style.display = 'none';
             photoUtils.selectVideo.setAttribute('size', 4);
-            VK.Api.call('video.get', {
+            VK.api('video.get', {
                 owner_id: mid,
                 count: 200,
                 extended: 1,
@@ -426,7 +426,7 @@ L.vkMap = function(cont, options) {
         //console.log('clickMap ', arguments);
     }
     function setItem(key, rec) {
-        VK.Api.call('storage.set', {
+        VK.api('storage.set', {
             key: key,
             value: rec ? JSON.stringify(rec) : '',
             user_id: mid,
@@ -524,7 +524,7 @@ L.vkMap = function(cont, options) {
 //console.log('chkAllKeys ', pt.response);
         if (!addDataControl._map) map.addControl(addDataControl);
         if (pt.response) {
-            VK.Api.call('storage.get', {
+            VK.api('storage.get', {
                 keys: pt.response.join(','),
                 user_id: mid,
                 global: 1
@@ -570,7 +570,7 @@ var tt = 1;*/
         if (response.session) {
             //if (vkontakte._map) map.removeControl(vkontakte);
             mid = response.session.mid;
-            VK.Api.call('storage.getKeys', {
+            VK.api('storage.getKeys', {
                 user_id: mid,
                 global: 1
              }, chkAllKeys
