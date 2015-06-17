@@ -136,7 +136,7 @@ L.vkMap = function(cont, options) {
         },
         setOptions: function (snode, arr) {
             snode.innerHTML = '';
-            arr.map(function(it) {
+            arr.items.map(function(it) {
                 var opt = L.DomUtil.create('option', '', snode);
                 opt.text = it.text || it.title || it.src || it.image || 'Без описания';
                 return opt;
