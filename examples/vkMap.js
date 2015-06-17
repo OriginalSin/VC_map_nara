@@ -90,7 +90,7 @@ L.vkMap = function(cont, options) {
                 posted: Date.now(),
                 created: it.created,
                 player: it.player,
-                src: it.src_big,
+                src: it.src_big || it.photo_604,
                 width: it.width,
                 height: it.height,
                 comments: it.comments,
@@ -161,7 +161,7 @@ L.vkMap = function(cont, options) {
                     iframe.setAttribute('width', 607);
                     iframe.setAttribute('height', 360);
                     iframe.setAttribute('frameborder', 0);
-                    iframe.src = it.player + '&hd=3';
+                    iframe.src = it.player.replace(/http:/, 'https:') + '&hd=3';
                     photoUtils.curPopup.update();
                 } else {
                     var title = L.DomUtil.create('div', 'inputDiv', div);
