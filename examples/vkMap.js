@@ -584,10 +584,17 @@ var tt = 1;*/
         }
     }
     // VK.Auth.getLoginStatus(authInfo);
+    VK.Vars = {};
     VK.init(function() {
 console.log('API initialization succeeded: ' , arguments);
          // API initialization succeeded
          // Your code here
+        var parts = document.location.search.substr(1).split("&");
+        for (var i=0; i<parts.length; i++) {
+            var curr = parts[i].split('=');
+            VK.Vars[curr[0]] = curr[1];
+        }
+        mid = VK.Vars.viewer_id;
         VK.api('storage.getKeys', {
             user_id: mid,
             global: 1
