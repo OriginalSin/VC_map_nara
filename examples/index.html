@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>GmxControls Leaflet Quick Start Guide Example</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../dist/css/mapnara.css" />
+    <script src="../dist/mapnara-min.js"></script>
+    <script src="vkMap.js"></script>
+
+    <script src="https://vk.com/js/api/openapi.js" type="text/javascript"></script>
+    <style>
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+            margin: 0px;
+        }
+        .resPhoto {
+            position: relative;
+            min-height: 200px;
+            text-align: center;
+            /*color: red;*/
+        } 
+        .arrows {
+            height: 32px;
+            position: absolute;
+            top: 50%;
+            width: 100%;
+        }
+        .previous {
+            left: 2px;
+            bottom: calc(50% - 32px);
+            position: absolute;
+            cursor: pointer;
+        }
+        .next {
+            right: 2px;
+            bottom: calc(50% - 32px);
+            position: absolute;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+	<div id="map"></div>
+    <div id="vk_api_transport"></div>
+	<script>
+        L.vkMap('map');
+	</script>
+</body>
+</html>
