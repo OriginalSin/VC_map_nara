@@ -1,6 +1,6 @@
 (function() {
 L.vkMap = function(cont, options) {
-    var osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18
     });
     var map = new L.Map(cont, {
