@@ -1,14 +1,18 @@
 (function() {
 L.vkMap = function(cont, options) {
+    var osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        maxZoom: 18
+    });
     var map = new L.Map(cont, {
         // maxBounds: [
             // [55.834843, 35.907440],
             // [55.16, 37.087097]
         // ],
+        layers: [osm],
         center: new L.LatLng(55.440116, 36.726608),
         zoom: 11
     });
-    L.Icon.Default.imagePath = 'http://maps.kosmosnimki.ru/api/leaflet/images';
+    //L.Icon.Default.imagePath = 'http://maps.kosmosnimki.ru/api/leaflet/images';
 
     var blm = map.gmxBaseLayersManager;
     blm.initDefaults().then(function() {
