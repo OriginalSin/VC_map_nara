@@ -14,13 +14,13 @@ L.vkMap = function(cont, options) {
     });
     //L.Icon.Default.imagePath = 'http://maps.kosmosnimki.ru/api/leaflet/images';
 
-    var blm = map.gmxBaseLayersManager;
-    blm.initDefaults().then(function() {
-        var baseLayers = ['OSM'],
-            currentID = baseLayers[0];
-        blm.setActiveIDs(baseLayers).setCurrentID(currentID);
-    });
-    L.control.gmxLayers(blm).addTo(map);
+    // var blm = map.gmxBaseLayersManager;
+    // blm.initDefaults().then(function() {
+        // var baseLayers = ['OSM'],
+            // currentID = baseLayers[0];
+        // blm.setActiveIDs(baseLayers).setCurrentID(currentID);
+    // });
+    // L.control.gmxLayers(blm).addTo(map);
 
     var controlsManager = map.gmxControlsManager;
     controlsManager.init({
