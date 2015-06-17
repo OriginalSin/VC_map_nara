@@ -588,6 +588,12 @@ var tt = 1;*/
 console.log('API initialization succeeded: ' , arguments);
          // API initialization succeeded
          // Your code here
+        VK.api('storage.getKeys', {
+            user_id: mid,
+            global: 1
+         }, chkAllKeys
+        );
+
       }, function() {
 console.log('API initialization failed: ' , arguments);
          // API initialization failed
