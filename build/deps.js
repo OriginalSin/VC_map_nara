@@ -30,10 +30,6 @@ var depsJS = [
     "external/Leaflet-GeoMixer/src/lang_ru.js",
     "external/Leaflet-GeoMixer/src/lang_en.js",
 
-    "external/L.Cadastre/src/L.ImageOverlay.Pane.js",
-    "external/L.Cadastre/src/L.Cadastre.js",
-    "external/L.Cadastre/src/L.Cadastre.Info.js",
-
     "external/gmxControls/src/js/gmxPosition.js",
     "external/gmxControls/src/js/gmxControlsManager.js",
     "external/gmxControls/src/js/L.Control.gmxIcon.js",
@@ -59,7 +55,6 @@ var depsJS = [
     "external/gmxDrawing/src/L.GmxDrawing.js"
 ];
 var depsCSS = [
-    "external/L.Cadastre/src/L.Cadastre.css",
     "external/leaflet/leaflet.css",
 
     "external/gmxControls/src/css/L.Control.gmxIcon.css",

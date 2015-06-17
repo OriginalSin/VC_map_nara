@@ -1,6 +1,3 @@
-[submodule "external/L.Cadastre"]
-	path = external/L.Cadastre
-	url = git@github.com:OriginalSin/L.Cadastre.git
 [submodule "external/Leaflet-GeoMixer"]
 	path = external/Leaflet-GeoMixer
 	url = git@github.com:ScanEx/Leaflet-GeoMixer.git
