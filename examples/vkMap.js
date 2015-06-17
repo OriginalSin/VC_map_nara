@@ -158,7 +158,7 @@ L.vkMap = function(cont, options) {
                 photoUtils.curNum = num;
                 if (it.player) {
                     var iframe = L.DomUtil.create('iframe', 'video', div);
-                    iframe.setAttribute('width', 607);
+                    iframe.setAttribute('width', 400);
                     iframe.setAttribute('height', 360);
                     iframe.setAttribute('frameborder', 0);
                     iframe.src = it.player.replace(/http:/, 'https:') + '&hd=max';
