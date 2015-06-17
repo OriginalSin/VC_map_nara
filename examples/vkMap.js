@@ -62,7 +62,7 @@ L.vkMap = function(cont, options) {
     .addTo(map);
 
     VK.init({
-        apiId: 4937579 
+        apiId: 4948598 // 4937579 
     });
 
     var photoUtils = {
