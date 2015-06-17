@@ -61,10 +61,9 @@ L.vkMap = function(cont, options) {
     .on('statechange', login)
     .addTo(map);
 
-    VK.init({
-        apiId: 4948598 // 4937579 
-    });
-
+    // VK.init({
+        // apiId: 4948598 // 4937579 
+    // });
     var photoUtils = {
         itemKeys: {
             owner_id: true,
@@ -584,6 +583,16 @@ var tt = 1;*/
             //if (!vkontakte._map) map.addControl(vkontakte);
         }
     }
-    VK.Auth.getLoginStatus(authInfo);
+    // VK.Auth.getLoginStatus(authInfo);
+    VK.init(function() {
+console.log('API initialization succeeded: ' , arguments);
+         // API initialization succeeded
+         // Your code here
+      }, function() {
+console.log('API initialization failed: ' , arguments);
+         // API initialization failed
+         // Can reload page here
+    }, '5.34');
+    
 };
 })();
