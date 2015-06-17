@@ -158,7 +158,7 @@ L.vkMap = function(cont, options) {
                 photoUtils.curNum = num;
                 if (it.player) {
                     var iframe = L.DomUtil.create('iframe', 'video', div);
-                    iframe.setAttribute('width', 607);
+                    iframe.setAttribute('width', 407);
                     iframe.setAttribute('height', 360);
                     iframe.setAttribute('frameborder', 0);
                     iframe.src = it.player.replace(/http:/, 'https:') + '&hd=3';
@@ -167,6 +167,7 @@ L.vkMap = function(cont, options) {
                     var title = L.DomUtil.create('div', 'inputDiv', div);
                     title.innerHTML = it.text || '';
                     var img = L.DomUtil.create('img', '', div);
+                    img.setAttribute('width', 400);
                     img.onload = function(ev) {
                         photoUtils.curPopup.update();
                     }
